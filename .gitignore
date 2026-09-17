@@ -1,0 +1,13 @@
+# Backend
+api/.venv/
+api/__pycache__/
+api/.env
+api/*.db
+
+# Frontend
+web/node_modules/
+web/.env
+
+# Général
+.DS_Store
+TP-LAB/
