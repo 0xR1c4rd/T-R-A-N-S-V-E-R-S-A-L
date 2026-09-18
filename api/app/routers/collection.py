@@ -8,13 +8,12 @@ from app.dependencies.auth import get_current_user
 from app.models.collection_entry import CollectionEntry, Statut
 from app.models.item import Item
 from app.models.user import User
-from app.schemas.collection import EntryIn, EntryUpdate, EntryOut
 from app.schemas.collection import EntryIn, EntryUpdate, EntryOut, StatsOut
 
 router = APIRouter(prefix="/me", tags=["collection"])
 
 
-@router.get("/collection", response_model=list[EntryOut])
+@router.get("/collection", response_model=list[EntryOut], summary="Lister la collection personnelle de l'utilisateur")
 async def list_collection(
     statut: Optional[Statut] = Query(default=None),
     tri: Optional[str] = Query(default=None, pattern="^(date|note)$"),
@@ -40,7 +39,7 @@ async def list_collection(
     return result
 
 
-@router.post("/collection", response_model=EntryOut, status_code=status.HTTP_201_CREATED)
+@router.post("/collection", response_model=EntryOut, status_code=status.HTTP_201_CREATED, summary="Ajouter un item à sa collection")
 async def add_to_collection(
     data: EntryIn,
     current_user: User = Depends(get_current_user),
@@ -79,7 +78,7 @@ async def add_to_collection(
     return EntryOut(**entry.model_dump(), item=item)
 
 
-@router.patch("/collection/{entry_id}", response_model=EntryOut)
+@router.patch("/collection/{entry_id}", response_model=EntryOut, summary="Modifier une entrée de sa collection")
 async def update_entry(
     entry_id: int,
     data: EntryUpdate,
@@ -105,7 +104,7 @@ async def update_entry(
     return EntryOut(**entry.model_dump(), item=item)
 
 
-@router.delete("/collection/{entry_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/collection/{entry_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Supprimer une entrée de sa collection")
 async def delete_entry(
     entry_id: int,
     current_user: User = Depends(get_current_user),
@@ -122,29 +121,7 @@ async def delete_entry(
     await session.commit()
 
 
-@router.get("/stats")
-async def get_stats(
-    current_user: User = Depends(get_current_user),
-    session: AsyncSession = Depends(get_session),
-):
-    query = select(CollectionEntry).where(CollectionEntry.user_id == current_user.id)
-    entries = (await session.exec(query)).all()
-
-    total = len(entries)
-    par_statut = {s.value: 0 for s in Statut}
-    notes = []
-
-    for entry in entries:
-        par_statut[entry.statut.value] += 1
-        if entry.note is not None:
-            notes.append(entry.note)
-
-    note_moyenne = round(sum(notes) / len(notes), 2) if notes else None
-
-    return {"total": total, "par_statut": par_statut, "note_moyenne": note_moyenne}
-
-
-@router.get("/stats", response_model=StatsOut)
+@router.get("/stats", response_model=StatsOut, summary="Obtenir les statistiques de sa collection")
 async def get_stats(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),

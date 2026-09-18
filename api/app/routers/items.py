@@ -11,7 +11,7 @@ from app.schemas.item import ItemOut, ItemListOut
 router = APIRouter(prefix="/items", tags=["items"])
 
 
-@router.get("", response_model=ItemListOut)
+@router.get("", response_model=ItemListOut, summary="Rechercher dans le catalogue avec filtre et pagination")
 async def list_items(
     q: Optional[str] = Query(default=None, min_length=2),
     categorie: Optional[str] = Query(default=None),
@@ -36,7 +36,7 @@ async def list_items(
     return ItemListOut(total=total, page=page, limit=limit, results=results)
 
 
-@router.get("/{item_id}", response_model=ItemOut)
+@router.get("/{item_id}", response_model=ItemOut, summary="Récupérer la fiche détaillée d'un item")
 async def get_item(item_id: int, session: AsyncSession = Depends(get_session)):
     item = await session.get(Item, item_id)
     if item is None:

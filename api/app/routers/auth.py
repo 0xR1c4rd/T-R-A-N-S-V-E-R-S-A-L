@@ -11,7 +11,7 @@ from app.schemas.auth import RegisterIn, LoginIn, UserOut, TokenOut
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/register", response_model=UserOut, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=UserOut, status_code=status.HTTP_201_CREATED, summary="Créer un compte utilisateur")
 async def register(data: RegisterIn, session: AsyncSession = Depends(get_session)):
     existing = await session.exec(select(User).where(User.email == data.email))
     if existing.first() is not None:
@@ -27,7 +27,7 @@ async def register(data: RegisterIn, session: AsyncSession = Depends(get_session
     return user
 
 
-@router.post("/login", response_model=TokenOut)
+@router.post("/login", response_model=TokenOut, summary="Se connecter et obtenir un token JWT")
 async def login(data: LoginIn, session: AsyncSession = Depends(get_session)):
     result = await session.exec(select(User).where(User.email == data.email))
     user = result.first()
@@ -42,6 +42,6 @@ async def login(data: LoginIn, session: AsyncSession = Depends(get_session)):
     return TokenOut(access_token=token)
 
 
-@router.get("/me", response_model=UserOut)
+@router.get("/me", response_model=UserOut, summary="Récupérer les infos de l'utilisateur connecté")
 async def me(current_user: User = Depends(get_current_user)):
     return current_user
