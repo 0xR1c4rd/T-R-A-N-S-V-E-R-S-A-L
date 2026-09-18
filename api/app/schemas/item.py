@@ -1,8 +1,10 @@
 from typing import List
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ItemOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     titre: str
     categorie: str
