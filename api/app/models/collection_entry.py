@@ -17,6 +17,6 @@ class CollectionEntry(SQLModel, table=True):
     statut: Statut
     note: Optional[int] = Field(default=None, ge=1, le=5)
     commentaire: Optional[str] = None
-    date_ajout: datetime = Field(default_factory=datetime.utcnow)
+    date_ajout: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     user_id: int = Field(foreign_key="user.id")
     item_id: int = Field(foreign_key="item.id")

@@ -14,6 +14,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Ma Collection API", lifespan=lifespan)
 
+register_exception_handlers(app)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
