@@ -13,7 +13,7 @@ export function Navbar() {
   return (
     <nav className="navbar">
       <Link to="/" className="navbar-brand">
-        🍺 Ma Collection
+         Ma Collection
       </Link>
       <div className="navbar-links">
         <Link to="/">Catalogue</Link>
