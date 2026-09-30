@@ -71,19 +71,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, [setToken]);
 
-  // Au chargement, si un token est déjà en localStorage (rechargement de page),
-  // on récupère l'utilisateur correspondant plutôt que de le laisser à null.
   useEffect(() => {
     if (token !== null && user === null) {
       authService
         .me(token)
         .then(setUser)
         .catch(() => {
-          // Token expiré ou invalide : on nettoie.
           setToken(null);
         });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const value: AuthContextValue = {

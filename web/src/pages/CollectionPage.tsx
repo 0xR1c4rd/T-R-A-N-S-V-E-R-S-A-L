@@ -14,9 +14,6 @@ export function CollectionPage() {
       statut: statut === "" ? undefined : statut,
       tri: tri === "" ? undefined : tri,
     });
-    // fetchEntries est stable (useCallback), on ne le remet pas en dépendance ici
-    // pour ne pas relancer inutilement à chaque re-render du provider.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statut, tri]);
 
   return (

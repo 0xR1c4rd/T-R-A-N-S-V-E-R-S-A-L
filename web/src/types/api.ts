@@ -12,7 +12,7 @@ export type Categorie =
 export interface Item {
   id: number;
   titre: string;
-  categorie: string; // string côté API 
+  categorie: string;  
   description: string;
   image_url: string;
   annee: number;
@@ -27,8 +27,6 @@ export interface ItemListOut {
   results: Item[];
 }
 
-// ---- Collection personnelle ----
-
 export type Statut = "a_decouvrir" | "en_cours" | "termine";
 
 export type Tri = "date" | "note";
@@ -38,20 +36,20 @@ export interface Entry {
   statut: Statut;
   note: number | null;
   commentaire: string | null;
-  date_ajout: string; // ISO 8601
+  date_ajout: string; 
   item: Item;
 }
 
 export interface EntryIn {
   item_id: number;
   statut: Statut;
-  note?: number; // 1 à 5
+  note?: number; 
   commentaire?: string;
 }
 
 export interface EntryUpdate {
   statut?: Statut;
-  note?: number; // 1 à 5
+  note?: number; 
   commentaire?: string;
 }
 
@@ -60,8 +58,6 @@ export interface StatsOut {
   par_statut: Record<Statut, number>;
   note_moyenne: number | null;
 }
-
-// ---- Authentification ----
 
 export interface RegisterIn {
   email: string;
@@ -83,8 +79,6 @@ export interface TokenOut {
   token_type: string;
 }
 
-// ---- Erreurs (handler maison) ----
-
 export interface ApiErrorBody {
   erreur: {
     code: number;
@@ -92,13 +86,11 @@ export interface ApiErrorBody {
   };
 }
 
-// ---- Paramètres de requête ----
-
 export interface ItemsQueryParams {
   q?: string;
   categorie?: string;
-  page?: number; // >= 1, défaut 1
-  limit?: number; // 1-50, défaut 12
+  page?: number; 
+  limit?: number; 
 }
 
 export interface CollectionQueryParams {

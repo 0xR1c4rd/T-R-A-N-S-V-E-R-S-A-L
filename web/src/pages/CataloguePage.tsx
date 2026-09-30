@@ -21,7 +21,6 @@ export function CataloguePage() {
 
   const qDebounced = useDebounce(q, 400);
 
-  // Revenir à la page 1 à chaque changement de recherche/filtre.
   useEffect(() => {
     setPage(1);
   }, [qDebounced, categorie]);

@@ -1,12 +1,5 @@
 import type { ApiErrorBody } from "../types/api";
 
-/**
- * Client HTTP unique de l'application.
- * Aucun `fetch` ne doit être appelé ailleurs dans le code : tout passe par ici.
- * - ajoute l'en-tête Authorization quand un token est fourni
- * - traduit le format d'erreur maison { erreur: { code, message } } en ApiError typée
- */
-
 const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
 export class ApiError extends Error {
@@ -19,7 +12,6 @@ export class ApiError extends Error {
   }
 }
 
-/** Vérifie à l'exécution qu'une valeur `unknown` a bien la forme du format d'erreur maison. */
 function isApiErrorBody(value: unknown): value is ApiErrorBody {
   if (typeof value !== "object" || value === null || !("erreur" in value)) {
     return false;
@@ -52,10 +44,6 @@ function buildUrl(path: string, searchParams?: RequestOptions["searchParams"]): 
   return url.toString();
 }
 
-/**
- * Requête générique typée. T est le type attendu de la réponse réussie.
- * Renvoie `undefined` pour les réponses 204 (pas de contenu).
- */
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { method = "GET", body, token, searchParams } = options;
 
