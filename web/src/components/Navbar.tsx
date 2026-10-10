@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function Navbar() {
   const { isAuthenticated, user, logout } = useAuth();
@@ -21,7 +22,7 @@ export function Navbar() {
           <>
             <Link to="/collection">Ma collection</Link>
             <Link to="/stats">Statistiques</Link>
-            <span style={{ color: "var(--color-ink-muted)", fontSize: "0.9rem" }}>{user?.email}</span>
+            <span style={{ color: "var(--color-nav-muted)", fontSize: "0.9rem" }}>{user?.email}</span>
             <button type="button" className="btn btn-secondary" onClick={handleLogout}>
               Déconnexion
             </button>
@@ -32,6 +33,7 @@ export function Navbar() {
             <Link to="/register">Inscription</Link>
           </>
         )}
+        <ThemeToggle />
       </div>
     </nav>
   );

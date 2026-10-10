@@ -1,5 +1,7 @@
+/* ===== Thème clair (par défaut) ===== */
 :root {
-  /* Palette "brasserie à l'ancienne" : parchemin vieilli, chêne, cuivre */
+  color-scheme: light;
+
   --color-bg: #e6dcc3;
   --color-surface: #f8f1de;
   --color-ink: #2a1e14;
@@ -7,9 +9,13 @@
   --color-border: #b89a63;
   --color-accent: #a3651f;
   --color-accent-dark: #7a4715;
+  --color-on-accent: #fbf3e2;
+  --color-heading: #2f2013;
   --color-oak: #2f2013;
   --color-oak-light: #4a3520;
   --color-brass: #c8952f;
+  --color-nav-text: #f0e4c8;
+  --color-nav-muted: #c9b78f;
 
   --color-success: #3f5b32;
   --color-success-bg: #dfe6d2;
@@ -20,9 +26,44 @@
   --color-danger: #8f2f22;
   --color-danger-bg: #ecd6cd;
 
+  --glow: rgba(255, 255, 255, 0.25);
+  --grain: rgba(0, 0, 0, 0.015);
+
   --font-heading: "Rye", "Georgia", serif;
   --font-body: "EB Garamond", Georgia, serif;
   --radius: 6px;
+}
+
+/* ===== Thème sombre : taverne ===== */
+:root[data-theme="sombre"] {
+  color-scheme: dark;
+
+  --color-bg: #1a120b;
+  --color-surface: #2a1e14;
+  --color-ink: #f0e4c8;
+  --color-ink-muted: #b9a888;
+  --color-border: #6b5232;
+  --color-accent: #c8952f;
+  --color-accent-dark: #e3b655;
+  --color-on-accent: #1a120b;
+  --color-heading: #f3e3bf;
+  --color-oak: #120c07;
+  --color-oak-light: #2a1c11;
+  --color-brass: #d9a441;
+  --color-nav-text: #f0e4c8;
+  --color-nav-muted: #b9a888;
+
+  --color-success: #a6c98f;
+  --color-success-bg: #2b3a22;
+  --color-warning: #e3b45e;
+  --color-warning-bg: #43331a;
+  --color-neutral: #b5a68a;
+  --color-neutral-bg: #3a3023;
+  --color-danger: #e58f7e;
+  --color-danger-bg: #4a2620;
+
+  --glow: rgba(255, 190, 110, 0.06);
+  --grain: rgba(255, 255, 255, 0.015);
 }
 
 * {
@@ -39,11 +80,11 @@ body {
   margin: 0;
   background-color: var(--color-bg);
   background-image:
-    radial-gradient(ellipse at top, rgba(255, 255, 255, 0.25), transparent 60%),
+    radial-gradient(ellipse at top, var(--glow), transparent 60%),
     repeating-linear-gradient(
       90deg,
-      rgba(0, 0, 0, 0.015) 0px,
-      rgba(0, 0, 0, 0.015) 2px,
+      var(--grain) 0px,
+      var(--grain) 2px,
       transparent 2px,
       transparent 5px
     );
@@ -51,6 +92,7 @@ body {
   font-family: var(--font-body);
   font-size: 17px;
   line-height: 1.55;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 h1,
@@ -60,7 +102,7 @@ h3 {
   font-weight: 400;
   letter-spacing: 0.02em;
   margin: 0 0 0.5em;
-  color: var(--color-oak);
+  color: var(--color-heading);
 }
 
 a {
@@ -106,6 +148,12 @@ a {
   color: var(--color-ink);
 }
 
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--color-ink-muted);
+  opacity: 0.8;
+}
+
 .input:focus,
 .select:focus,
 .textarea:focus {
@@ -146,14 +194,14 @@ a {
 
 .btn-primary {
   background: var(--color-accent);
-  color: #fbf3e2;
+  color: var(--color-on-accent);
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
 }
 
 .btn-secondary {
   background: transparent;
-  border-color: var(--color-oak);
-  color: var(--color-oak);
+  border-color: var(--color-heading);
+  color: var(--color-heading);
 }
 
 .btn-danger {
@@ -232,7 +280,7 @@ a {
 
 .navbar-links a {
   text-decoration: none;
-  color: #f0e4c8;
+  color: var(--color-nav-text);
   font-size: 0.95rem;
   font-family: var(--font-heading);
   letter-spacing: 0.02em;
