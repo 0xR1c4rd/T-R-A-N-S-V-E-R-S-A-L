@@ -1,4 +1,4 @@
-# Ma Collection - Frontend
+# Caserne - Frontend
 
 Interface React/TypeScript qui consomme l'API du dossier `api/`. Univers : la bière.
 
