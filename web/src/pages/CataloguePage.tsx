@@ -81,7 +81,7 @@ export function CataloguePage() {
 
   const sentinelRef = useInfiniteScroll(chargerPageSuivante, {
     hasMore,
-    isLoading: mode !== "infini" || isLoadingInitial || isLoadingMore,
+    isLoading: mode !== "infini" || isLoadingInitial || isLoadingMore || error !== null,
   });
 
   return (
