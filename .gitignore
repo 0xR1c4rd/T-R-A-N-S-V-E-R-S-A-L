@@ -11,3 +11,7 @@ web/.env
 # Général
 .DS_Store
 TP-LAB/
+.pytest_cache/
+venv/
+dist/
+*.tsbuildinfo
