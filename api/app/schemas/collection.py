@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from app.models.collection_entry import Statut
 from app.schemas.item import ItemOut
@@ -18,6 +18,13 @@ class EntryUpdate(BaseModel):
     statut: Optional[Statut] = None
     note: Optional[int] = Field(default=None, ge=1, le=5)
     commentaire: Optional[str] = Field(default=None, max_length=1000)
+
+    @model_validator(mode="after")
+    def statut_non_nul(self) -> "EntryUpdate":
+        # statut est obligatoire en base : l'omettre est permis, l'envoyer à null non.
+        if "statut" in self.model_fields_set and self.statut is None:
+            raise ValueError("statut ne peut pas être null")
+        return self
 
 
 class EntryOut(BaseModel):
