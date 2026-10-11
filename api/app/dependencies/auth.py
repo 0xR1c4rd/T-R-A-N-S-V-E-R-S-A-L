@@ -1,39 +1,43 @@
+from typing import Optional
+
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.core.security import decode_access_token
 from app.db.session import get_session
 from app.models.user import User
 
-bearer_scheme = HTTPBearer()
+# auto_error=False : on lève nous-mêmes l'erreur pour garder un 401 et un message en français.
+bearer_scheme = HTTPBearer(auto_error=False)
+
+
+def _non_authentifie(message: str) -> HTTPException:
+    return HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=message,
+        headers={"WWW-Authenticate": "Bearer"},
+    )
 
 
 async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(bearer_scheme),
     session: AsyncSession = Depends(get_session),
 ) -> User:
-    token = credentials.credentials
+    if credentials is None:
+        raise _non_authentifie("Authentification requise")
 
-    payload = decode_access_token(token)
+    payload = decode_access_token(credentials.credentials)
     if payload is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token invalide ou expiré",
-        )
+        raise _non_authentifie("Token invalide ou expiré")
 
-    user_id = payload.get("sub")
-    if user_id is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token invalide",
-        )
+    try:
+        user_id = int(payload["sub"])
+    except (KeyError, TypeError, ValueError):
+        raise _non_authentifie("Token invalide")
 
-    user = await session.get(User, int(user_id))
+    user = await session.get(User, user_id)
     if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Utilisateur introuvable",
-        )
+        raise _non_authentifie("Utilisateur introuvable")
 
     return user
