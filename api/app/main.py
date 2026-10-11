@@ -1,15 +1,16 @@
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.core.exceptions import register_exception_handlers
 from app.db.session import init_db
-from app.routers import auth, items, collection
-
-from app.core.exceptions import register_exception_handlers 
+from app.routers import auth, collection, items
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     await init_db()
     yield
 
