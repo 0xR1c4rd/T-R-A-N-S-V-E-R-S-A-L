@@ -7,22 +7,22 @@ import type { Statut } from "../types/api";
 const STATUTS: Statut[] = ["a_decouvrir", "en_cours", "termine"];
 
 export function StatsPage() {
-  const { stats, isLoading, error, fetchStats } = useCollection();
+  const { stats, statsLoading, statsError, fetchStats } = useCollection();
 
   useEffect(() => {
     fetchStats();
-  }, []);
+  }, [fetchStats]);
 
   return (
     <div className="container">
       <h1 className="page-title">Statistiques</h1>
 
-      {isLoading && <ChargementState message="Calcul des statistiques…" />}
-      {!isLoading && error !== null && <ErreurState message={error} />}
-      {!isLoading && error === null && stats !== null && stats.total === 0 && (
+      {statsLoading && <ChargementState message="Calcul des statistiques…" />}
+      {!statsLoading && statsError !== null && <ErreurState message={statsError} />}
+      {!statsLoading && statsError === null && stats !== null && stats.total === 0 && (
         <VideState message="Ajoutez des bières à votre collection pour voir vos statistiques." />
       )}
-      {!isLoading && error === null && stats !== null && stats.total > 0 && (
+      {!statsLoading && statsError === null && stats !== null && stats.total > 0 && (
         <div className="card" style={{ marginTop: "1.25rem", maxWidth: 420 }}>
           <p style={{ fontSize: "1.2rem", margin: "0 0 1rem" }}>
             <strong>{stats.total}</strong> bière{stats.total > 1 ? "s" : ""} dans la collection

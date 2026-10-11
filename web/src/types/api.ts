@@ -1,18 +1,8 @@
-export type Categorie =
-  | "Trappiste"
-  | "IPA"
-  | "Blonde"
-  | "Stout"
-  | "Blanche"
-  | "Ambrée"
-  | "Sour"
-  | "Brune"
-  | "Triple";
-
+// ---- Catalogue ----
 export interface Item {
   id: number;
   titre: string;
-  categorie: string;  
+  categorie: string; // string côté API (pas de liste fermée exposée par /items)
   description: string;
   image_url: string;
   annee: number;
@@ -27,6 +17,8 @@ export interface ItemListOut {
   results: Item[];
 }
 
+// ---- Collection personnelle ----
+
 export type Statut = "a_decouvrir" | "en_cours" | "termine";
 
 export type Tri = "date" | "note";
@@ -36,21 +28,23 @@ export interface Entry {
   statut: Statut;
   note: number | null;
   commentaire: string | null;
-  date_ajout: string; 
+  date_ajout: string; // ISO 8601
   item: Item;
 }
 
 export interface EntryIn {
   item_id: number;
   statut: Statut;
-  note?: number; 
-  commentaire?: string;
+  // null = effacer la valeur ; undefined (clé absente) = ne pas la modifier.
+  note?: number | null; // 1 à 5
+  commentaire?: string | null;
 }
 
 export interface EntryUpdate {
   statut?: Statut;
-  note?: number; 
-  commentaire?: string;
+  // null = effacer la valeur ; undefined (clé absente) = ne pas la modifier.
+  note?: number | null; // 1 à 5
+  commentaire?: string | null;
 }
 
 export interface StatsOut {
@@ -58,6 +52,8 @@ export interface StatsOut {
   par_statut: Record<Statut, number>;
   note_moyenne: number | null;
 }
+
+// ---- Authentification ----
 
 export interface RegisterIn {
   email: string;
@@ -79,6 +75,8 @@ export interface TokenOut {
   token_type: string;
 }
 
+// ---- Erreurs (handler maison) ----
+
 export interface ApiErrorBody {
   erreur: {
     code: number;
@@ -86,11 +84,13 @@ export interface ApiErrorBody {
   };
 }
 
+// ---- Paramètres de requête ----
+
 export interface ItemsQueryParams {
   q?: string;
   categorie?: string;
-  page?: number; 
-  limit?: number; 
+  page?: number; // >= 1, défaut 1
+  limit?: number; // 1-50, défaut 12
 }
 
 export interface CollectionQueryParams {

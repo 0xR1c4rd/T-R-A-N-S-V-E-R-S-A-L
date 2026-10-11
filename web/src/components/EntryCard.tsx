@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { StatutBadge } from "./StatutBadge";
+import { ApiError } from "../services/apiClient";
 import type { Entry, EntryUpdate, Statut } from "../types/api";
 
 interface EntryCardProps {
@@ -22,14 +23,23 @@ export function EntryCard({ entry, onUpdate, onDelete }: EntryCardProps) {
     try {
       await onUpdate(entry.id, {
         statut,
-        note: note === "" ? undefined : Number(note),
-        commentaire: commentaire === "" ? undefined : commentaire,
+        note: note === "" ? null : Number(note),
+        commentaire: commentaire === "" ? null : commentaire,
       });
       setEditing(false);
-    } catch {
-      setError("Modification impossible.");
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Modification impossible.");
     } finally {
       setIsSaving(false);
+    }
+  }
+
+  async function handleDelete(): Promise<void> {
+    setError(null);
+    try {
+      await onDelete(entry.id);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Suppression impossible.");
     }
   }
 
@@ -58,11 +68,12 @@ export function EntryCard({ entry, onUpdate, onDelete }: EntryCardProps) {
             {entry.commentaire !== null && entry.commentaire !== "" && (
               <p style={{ margin: "0.2rem 0", fontStyle: "italic" }}>« {entry.commentaire} »</p>
             )}
+            {error !== null && <p className="error-text">{error}</p>}
             <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.5rem" }}>
               <button type="button" className="btn btn-secondary" onClick={() => setEditing(true)}>
                 Modifier
               </button>
-              <button type="button" className="btn btn-danger" onClick={() => onDelete(entry.id)}>
+              <button type="button" className="btn btn-danger" onClick={handleDelete}>
                 Supprimer
               </button>
             </div>

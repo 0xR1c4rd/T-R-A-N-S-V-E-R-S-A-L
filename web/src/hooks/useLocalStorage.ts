@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export function useLocalStorage<T>(
   cle: string,
@@ -13,14 +13,16 @@ export function useLocalStorage<T>(
     }
   });
 
-  const setValeurPersistee = (nouvelleValeur: T): void => {
-    setValeur(nouvelleValeur);
-    try {
-      window.localStorage.setItem(cle, JSON.stringify(nouvelleValeur));
-    } catch {
-      // Stockage indisponible (navigation privée, quota atteint...) : on ignore.
-    }
-  };
+  const setValeurPersistee = useCallback(
+    (nouvelleValeur: T): void => {
+      setValeur(nouvelleValeur);
+      try {
+        window.localStorage.setItem(cle, JSON.stringify(nouvelleValeur));
+      } catch {
+      }
+    },
+    [cle]
+  );
 
   return [valeur, setValeurPersistee];
 }

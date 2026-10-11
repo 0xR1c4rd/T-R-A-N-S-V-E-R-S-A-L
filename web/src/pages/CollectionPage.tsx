@@ -5,7 +5,8 @@ import { ChargementState, ErreurState, VideState } from "../components/EcranStat
 import type { Statut, Tri } from "../types/api";
 
 export function CollectionPage() {
-  const { entries, isLoading, error, fetchEntries, updateEntry, removeEntry } = useCollection();
+  const { entries, entriesLoading, entriesError, fetchEntries, updateEntry, removeEntry } =
+    useCollection();
   const [statut, setStatut] = useState<Statut | "">("");
   const [tri, setTri] = useState<Tri | "">("date");
 
@@ -14,7 +15,7 @@ export function CollectionPage() {
       statut: statut === "" ? undefined : statut,
       tri: tri === "" ? undefined : tri,
     });
-  }, [statut, tri]);
+  }, [statut, tri, fetchEntries]);
 
   return (
     <div className="container">
@@ -43,12 +44,12 @@ export function CollectionPage() {
         </select>
       </div>
 
-      {isLoading && <ChargementState message="Chargement de votre collection…" />}
-      {!isLoading && error !== null && <ErreurState message={error} />}
-      {!isLoading && error === null && entries.length === 0 && (
+      {entriesLoading && <ChargementState message="Chargement de votre collection…" />}
+      {!entriesLoading && entriesError !== null && <ErreurState message={entriesError} />}
+      {!entriesLoading && entriesError === null && entries.length === 0 && (
         <VideState message="Votre collection est vide pour l'instant. Direction le catalogue !" />
       )}
-      {!isLoading && error === null && entries.length > 0 && (
+      {!entriesLoading && entriesError === null && entries.length > 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
           {entries.map((entry) => (
             <EntryCard key={entry.id} entry={entry} onUpdate={updateEntry} onDelete={removeEntry} />

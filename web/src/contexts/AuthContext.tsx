@@ -8,7 +8,7 @@ import {
 } from "react";
 import { authService } from "../services/authService";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import { ApiError } from "../services/apiClient";
+import { ApiError, setUnauthorizedHandler } from "../services/apiClient";
 import type { UserOut } from "../types/api";
 
 interface AuthContextValue {
@@ -71,16 +71,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, [setToken]);
 
+  // Si l'API répond 401 en cours de session (token expiré), on déconnecte :
+  // token = null fait rediriger les routes protégées vers /login.
+  useEffect(() => {
+    setUnauthorizedHandler(logout);
+    return () => setUnauthorizedHandler(null);
+  }, [logout]);
+
+  // Au chargement, si un token est déjà en localStorage (rechargement de page),
+  // on récupère l'utilisateur correspondant plutôt que de le laisser à null.
   useEffect(() => {
     if (token !== null && user === null) {
       authService
         .me(token)
         .then(setUser)
         .catch(() => {
+          // Token expiré ou invalide : on nettoie.
           setToken(null);
         });
     }
-  }, [token]);
+  }, [token, user, setToken]);
 
   const value: AuthContextValue = {
     token,

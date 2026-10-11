@@ -25,6 +25,12 @@ function isApiErrorBody(value: unknown): value is ApiErrorBody {
   );
 }
 
+let onUnauthorized: (() => void) | null = null;
+
+export function setUnauthorizedHandler(handler: (() => void) | null): void {
+  onUnauthorized = handler;
+}
+
 interface RequestOptions {
   method?: "GET" | "POST" | "PATCH" | "DELETE";
   body?: unknown;
@@ -63,7 +69,6 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
       body: body !== undefined ? JSON.stringify(body) : undefined,
     });
   } catch {
-    // Erreur réseau (serveur injoignable, CORS, etc.)
     throw new ApiError(0, "Impossible de joindre le serveur. Vérifiez votre connexion.");
   }
 
@@ -79,6 +84,9 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   }
 
   if (!response.ok) {
+    if (response.status === 401 && token && onUnauthorized !== null) {
+      onUnauthorized();
+    }
     if (isApiErrorBody(payload)) {
       throw new ApiError(payload.erreur.code, payload.erreur.message);
     }
