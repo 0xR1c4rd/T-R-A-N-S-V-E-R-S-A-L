@@ -1,4 +1,4 @@
-# Ma Collection — API (Backend)
+# Caserne — API (Backend)
 
 API REST pour l'application « Ma Collection », univers **bières**.
 

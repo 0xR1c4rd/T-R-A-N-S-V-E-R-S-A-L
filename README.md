@@ -1,4 +1,4 @@
-# Ma Collection
+# Caserne
  
 Application web de collection personnelle sur le thème de la **bière** : on parcourt un catalogue de bières, on ajoute celles qui nous intéressent à sa collection, puis on les note, on les commente et on suit son avancement.
  
