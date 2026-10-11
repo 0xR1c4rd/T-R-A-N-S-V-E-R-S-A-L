@@ -1,4 +1,3 @@
-from typing import List
 from pydantic import BaseModel, ConfigDict
 
 
@@ -19,4 +18,4 @@ class ItemListOut(BaseModel):
     total: int
     page: int
     limit: int
-    results: List[ItemOut]
+    results: list[ItemOut]
