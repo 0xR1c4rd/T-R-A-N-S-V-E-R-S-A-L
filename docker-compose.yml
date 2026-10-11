@@ -4,12 +4,25 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - ./api/.env          # JWT_SECRET_KEY, JWT_EXPIRE_MINUTES… (copié depuis .env.example)
+      - ./api/.env          # JWT_SECRET_KEY, JWT_EXPIRE_MINUTES…
     environment:
-      # Remplace DATABASE_URL du .env : la base vit dans un volume, pas dans l'image.
       DATABASE_URL: sqlite+aiosqlite:////data/ma_collection.db
     volumes:
       - api-data:/data
 
+  web:
+    build:
+      context: ./web
+      args:
+        # Adresse de l'API vue depuis le navigateur (pas depuis le conteneur).
+        VITE_API_URL: http://localhost:8000
+    # Le site doit être servi sur http://localhost:5173 : c'est la seule
+    # origine autorisée par le CORS de l'API.
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+
 volumes:
   api-data:
+  
