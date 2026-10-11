@@ -1,0 +1,15 @@
+services:
+  api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./api/.env          # JWT_SECRET_KEY, JWT_EXPIRE_MINUTES… (copié depuis .env.example)
+    environment:
+      # Remplace DATABASE_URL du .env : la base vit dans un volume, pas dans l'image.
+      DATABASE_URL: sqlite+aiosqlite:////data/ma_collection.db
+    volumes:
+      - api-data:/data
+
+volumes:
+  api-data:
